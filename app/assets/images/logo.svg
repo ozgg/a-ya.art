@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="300px" viewBox="0 0 300 300">
+  <title>От А до Я</title>
+  <style>
+    line { stroke-width: 5; }
+  </style>
+  <g>
+    <rect x="0" y="0" width="300" height="300" fill="#ffffff"/>
+    <g id="ya">
+      <path d="M 2,298 H 298 V 2 Q 275,275 2,298" fill="#77ffff"/>
+      <path d="M 150,2 Q 150,150 298,150 V 2" fill="#77ff77"/>
+    </g>
+    <g id="a">
+      <path d="M 2,2 H 298 Q 25,25 2,298 V 2" fill="#ff7777"/>
+      <line x1="100" y1="150" x2="200" y2="150" stroke="#ff3333"/>
+    </g>
+  </g>
+</svg>
