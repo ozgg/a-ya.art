@@ -1,3 +1,10 @@
 // Здесь можно переобъявлять то, что описано в biovision/base/default,
 // а также добавлять новые общие стили
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700&subset=cyrillic');
+
+$main-color-a: #f77;
+$main-color-b: #7f7;
+$main-color-c: #7ff;
+$main-color-a-t: rgba(255, 127, 127, .5);
+$main-color-b-t: rgba(127, 255, 127, .5);
+$main-color-c-t: rgba(127, 255, 255, .5);

@@ -1,3 +1,36 @@
 #main-footer {
+  border-top: $border-secondary;
+  font-size: $font-size-decreased;
 
+  > div {
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    max-width: $content-width;
+    padding: $spacer-xs;
+  }
+
+  .copyright {
+    color: $text-color-secondary;
+  }
+
+  nav {
+    margin: 0 0 0 auto;
+
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      list-style: none;
+      text-align: right;
+    }
+
+    a {
+      display: inline-block;
+      padding: $spacer-xxs 0;
+    }
+  }
 }
