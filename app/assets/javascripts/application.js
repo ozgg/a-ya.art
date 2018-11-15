@@ -14,4 +14,5 @@
 //= require activestorage
 //= require biovision/base/biovision
 //= require biovision/base/biovision-sliders
+//= require biovision/post/biovision-posts
 //= require_tree .
