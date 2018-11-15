@@ -16,3 +16,35 @@ body {
     flex: 1;
   }
 }
+
+h1,
+h2,
+h3 {
+  font-weight: 500;
+}
+
+.breadcrumbs {
+  border-bottom: $border-secondary;
+  margin: 0 auto;
+  max-width: $content-width;
+  padding: $spacer-xs;
+}
+
+@supports (--css: vars) {
+  .breadcrumbs {
+    padding: var(--spacer-xs);
+  }
+}
+
+article {
+  margin: 0 auto;
+  max-width: $content-width;
+  padding: $spacer-xs;
+  position: relative;
+}
+
+@supports (--css: vars) {
+  article {
+    padding: var(--spacer-xs);
+  }
+}

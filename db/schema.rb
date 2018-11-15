@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_14_010746) do
+ActiveRecord::Schema.define(version: 2018_11_15_210030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,21 @@ ActiveRecord::Schema.define(version: 2018_10_14_010746) do
     t.string "name", null: false
     t.index ["browser_id"], name: "index_agents_on_browser_id"
     t.index ["name"], name: "index_agents_on_name"
+  end
+
+  create_table "artists", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "language_id"
+    t.boolean "visible", default: true, null: false
+    t.date "birthday"
+    t.string "surname"
+    t.string "name"
+    t.string "patronymic"
+    t.string "image"
+    t.string "lead"
+    t.text "description"
+    t.index ["language_id"], name: "index_artists_on_language_id"
   end
 
   create_table "biovision_components", force: :cascade do |t|
@@ -132,10 +147,11 @@ ActiveRecord::Schema.define(version: 2018_10_14_010746) do
     t.string "url"
     t.string "image"
     t.string "image_alt_text"
-    t.string "title", default: "", null: false
-    t.string "keywords", default: "", null: false
-    t.string "description", default: "", null: false
+    t.string "meta_title", default: "", null: false
+    t.string "meta_keywords", default: "", null: false
+    t.string "meta_description", default: "", null: false
     t.text "body", default: "", null: false
+    t.boolean "visible", default: true, null: false
     t.index ["language_id"], name: "index_editable_pages_on_language_id"
   end
 
@@ -406,6 +422,7 @@ ActiveRecord::Schema.define(version: 2018_10_14_010746) do
   end
 
   add_foreign_key "agents", "browsers", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "artists", "languages"
   add_foreign_key "biovision_parameters", "biovision_components", on_update: :cascade, on_delete: :cascade
   add_foreign_key "codes", "agents", on_update: :cascade, on_delete: :nullify
   add_foreign_key "codes", "code_types", on_update: :cascade, on_delete: :cascade
