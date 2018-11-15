@@ -12,9 +12,9 @@ class CreateEditablePages < ActiveRecord::Migration[5.1]
         t.string :url
         t.string :image
         t.string :image_alt_text
-        t.string :title, default: '', null: false
-        t.string :keywords, default: '', null: false
-        t.string :description, default: '', null: false
+        t.string :meta_title, default: '', null: false
+        t.string :meta_keywords, default: '', null: false
+        t.string :meta_description, default: '', null: false
         t.text :body, default: '', null: false
       end
 
