@@ -34,6 +34,11 @@
     }
   }
 
+  .title {
+    font: 300 var(--font-size-large) $font-family-heading;
+    margin: 0 auto;
+  }
+
   .authentication {
     margin: 0 0 0 auto;
   }

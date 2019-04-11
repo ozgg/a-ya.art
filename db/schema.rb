@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_22_225044) do
+ActiveRecord::Schema.define(version: 2019_04_11_233334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "slug", null: false
-    t.json "settings", default: {}, null: false
+    t.jsonb "settings", default: {}, null: false
     t.index ["slug"], name: "index_biovision_components_on_slug", unique: true
   end
 
@@ -113,10 +113,11 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.integer "quantity", limit: 2, default: 1, null: false
     t.string "body", null: false
     t.string "payload"
-    t.json "data", default: {}, null: false
+    t.jsonb "data", default: {}, null: false
     t.index ["agent_id"], name: "index_codes_on_agent_id"
     t.index ["body", "code_type_id", "quantity"], name: "index_codes_on_body_and_code_type_id_and_quantity"
     t.index ["code_type_id"], name: "index_codes_on_code_type_id"
+    t.index ["data"], name: "index_codes_on_data", using: :gin
     t.index ["user_id"], name: "index_codes_on_user_id"
   end
 
@@ -156,6 +157,15 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.index ["language_id"], name: "index_editable_pages_on_language_id"
   end
 
+  create_table "editorial_member_post_types", comment: "Available post type for editorial member", force: :cascade do |t|
+    t.bigint "editorial_member_id", null: false
+    t.bigint "post_type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["editorial_member_id"], name: "index_editorial_member_post_types_on_editorial_member_id"
+    t.index ["post_type_id"], name: "index_editorial_member_post_types_on_post_type_id"
+  end
+
   create_table "editorial_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -191,6 +201,7 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.string "phone"
     t.string "image"
     t.text "comment"
+    t.jsonb "data", default: {}, null: false
     t.index ["agent_id"], name: "index_feedback_requests_on_agent_id"
     t.index ["language_id"], name: "index_feedback_requests_on_language_id"
   end
@@ -348,6 +359,47 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.index ["post_type_id"], name: "index_post_categories_on_post_type_id"
   end
 
+  create_table "post_group_categories", comment: "Post category in group", force: :cascade do |t|
+    t.bigint "post_group_id", null: false
+    t.bigint "post_category_id", null: false
+    t.integer "priority", limit: 2, default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_category_id"], name: "index_post_group_categories_on_post_category_id"
+    t.index ["post_group_id"], name: "index_post_group_categories_on_post_group_id"
+  end
+
+  create_table "post_group_tags", comment: "Post tag in group", force: :cascade do |t|
+    t.bigint "post_group_id", null: false
+    t.bigint "post_tag_id", null: false
+    t.integer "priority", limit: 2, default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_group_id"], name: "index_post_group_tags_on_post_group_id"
+    t.index ["post_tag_id"], name: "index_post_group_tags_on_post_tag_id"
+  end
+
+  create_table "post_groups", comment: "Group of post categories and tags", force: :cascade do |t|
+    t.integer "priority", limit: 2, default: 1, null: false
+    t.boolean "visible", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug"
+    t.string "name"
+    t.string "nav_text"
+  end
+
+  create_table "post_illustrations", comment: "Inline post illustration", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "agent_id"
+    t.inet "ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "image"
+    t.index ["agent_id"], name: "index_post_illustrations_on_agent_id"
+    t.index ["user_id"], name: "index_post_illustrations_on_user_id"
+  end
+
   create_table "post_images", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -357,9 +409,10 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.string "image"
     t.string "image_alt_text"
     t.string "caption"
-    t.string "owner_name"
-    t.string "owner_link"
+    t.string "source_name"
+    t.string "source_link"
     t.text "description"
+    t.uuid "uuid"
     t.index ["post_id"], name: "index_post_images_on_post_id"
   end
 
@@ -480,8 +533,8 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.string "image"
     t.string "image_alt_text"
     t.string "image_name"
-    t.string "image_author_name"
-    t.string "image_author_link"
+    t.string "image_source_name"
+    t.string "image_source_link"
     t.string "original_title"
     t.string "source_name"
     t.string "source_link"
@@ -496,10 +549,14 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.text "body", null: false
     t.text "parsed_body"
     t.string "tags_cache", default: [], null: false, array: true
+    t.boolean "spam", default: false, null: false
+    t.jsonb "data", default: {}, null: false
+    t.boolean "avoid_parsing", default: false, null: false
     t.index "date_trunc('month'::text, created_at), post_type_id, user_id", name: "posts_created_at_month_idx"
     t.index "date_trunc('month'::text, publication_time), post_type_id, user_id", name: "posts_pubdate_month_idx"
     t.index ["agent_id"], name: "index_posts_on_agent_id"
     t.index ["created_at"], name: "index_posts_on_created_at"
+    t.index ["data"], name: "index_posts_on_data", using: :gin
     t.index ["language_id"], name: "index_posts_on_language_id"
     t.index ["post_category_id"], name: "index_posts_on_post_category_id"
     t.index ["post_type_id"], name: "index_posts_on_post_type_id"
@@ -542,6 +599,20 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.string "slug", null: false
     t.string "description", default: "", null: false
     t.index ["slug"], name: "index_privileges_on_slug", unique: true
+  end
+
+  create_table "simple_blocks", comment: "Simple editable block", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "visible", default: true, null: false
+    t.boolean "background_image", default: false, null: false
+    t.string "slug", null: false
+    t.string "name"
+    t.string "image"
+    t.string "image_alt_text"
+    t.text "body"
+    t.index ["name"], name: "index_simple_blocks_on_name"
+    t.index ["slug"], name: "index_simple_blocks_on_slug"
   end
 
   create_table "tokens", force: :cascade do |t|
@@ -616,8 +687,10 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
     t.string "search_string"
     t.string "referral_link"
     t.json "profile_data", default: {}, null: false
-    t.json "data", default: {"profile"=>{}}, null: false
+    t.jsonb "data", default: {"profile"=>{}}, null: false
+    t.uuid "uuid"
     t.index ["agent_id"], name: "index_users_on_agent_id"
+    t.index ["data"], name: "index_users_on_data", using: :gin
     t.index ["email"], name: "index_users_on_email"
     t.index ["language_id"], name: "index_users_on_language_id"
     t.index ["referral_link"], name: "index_users_on_referral_link"
@@ -641,6 +714,8 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
   add_foreign_key "codes", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "editable_blocks", "languages", on_update: :cascade, on_delete: :cascade
   add_foreign_key "editable_pages", "languages", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "editorial_member_post_types", "editorial_members", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "editorial_member_post_types", "post_types", on_update: :cascade, on_delete: :cascade
   add_foreign_key "editorial_members", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "featured_posts", "languages", on_update: :cascade, on_delete: :cascade
   add_foreign_key "featured_posts", "posts", on_update: :cascade, on_delete: :cascade
@@ -663,6 +738,12 @@ ActiveRecord::Schema.define(version: 2018_12_22_225044) do
   add_foreign_key "metrics", "biovision_components", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_categories", "post_categories", column: "parent_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_categories", "post_types", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_group_categories", "post_categories", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_group_categories", "post_groups", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_group_tags", "post_groups", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_group_tags", "post_tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_illustrations", "agents", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "post_illustrations", "users", on_update: :cascade, on_delete: :nullify
   add_foreign_key "post_images", "posts", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_links", "posts", column: "other_post_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_links", "posts", on_update: :cascade, on_delete: :cascade
