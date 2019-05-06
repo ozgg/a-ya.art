@@ -1,5 +1,5 @@
 ru:
-  copyright: "2018 a-ya.art"
+  copyright: "2018–2019 a-ya.art"
   shared:
     meta_texts:
       site_name: "a-ya.art"
@@ -7,4 +7,4 @@ ru:
     index:
       description: "Новый сайт на движке biovision"
       heading: "Главная страница"
-      title: "Искусство от А до Я"
+      title: "Современное искусство. Теория и практика"

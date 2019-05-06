@@ -1,0 +1,74 @@
+.post {
+  figure {
+    border-bottom: $border-secondary;
+    margin: 0 auto;
+    max-width: 64rem;
+    padding: 0 0 .8rem 0;
+  }
+
+  figcaption {
+    align-items: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .image_source {
+    color: $text-color-secondary;
+    font-size: $font-size-decreased;
+    margin-left: auto;
+  }
+
+  .body {
+    padding: .4rem;
+  }
+
+  footer {
+    align-items: center;
+    background: $background-post-footer;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: $font-size-decreased;
+    padding: .8rem;
+
+    .author {
+      margin: 0 1.6rem 0 0;
+    }
+
+    .author-title {
+      &::before {
+        content: '(';
+      }
+
+      &::after {
+        content: ')';
+      }
+    }
+
+    .source {
+      color: $text-color-secondary;
+      margin-left: auto;
+    }
+
+    .time {
+      margin: .8rem 0 0 0;
+      width: 100%;
+    }
+  }
+}
+
+.post-image-main {
+  height: 40rem;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .post-image-main {
+    height: 66.7vw;
+  }
+}

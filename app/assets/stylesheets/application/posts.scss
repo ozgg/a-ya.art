@@ -1,0 +1,58 @@
+$background-post-footer: rgb(248, 248, 248) !default;
+$background-post-preview-image: linear-gradient(to top, #f0f0f0, #fff) !default;
+$background-post-tag: rgb(248, 248, 248) !default;
+
+.recent-posts {
+  .list,
+  .posts-list {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+}
+
+.post-tags {
+  margin: 0;
+  padding: var(--spacer-xxs, .4rem);
+
+  li {
+    display: inline-block;
+    font-size: var(--font-size-decreased, 1.3rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a:link,
+  a:visited {
+    background: $background-post-tag;
+    display: inline-block;
+    padding: var(--spacer-xs, .8rem);
+  }
+}
+
+.view_count {
+  background: image_url('biovision/post/icons/view.svg') no-repeat center left / 1.6rem auto;
+  margin: 0 .4rem;
+  padding-left: 1.8rem;
+}
+
+.time_required {
+  background: image_url('biovision/post/icons/time.svg') no-repeat center left / 1.6rem auto;
+  display: inline-block;
+  padding-left: 1.8rem;
+}
+
+.posts-linked {
+  .list,
+  .posts-list {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+}
+
+@import "application/posts/preview";
+@import "application/posts/item";

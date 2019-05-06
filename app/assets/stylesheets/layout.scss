@@ -1,5 +1,14 @@
 body {
+  font-weight: 300;
   height: 100%;
+}
+
+a {
+  &:active,
+  &:focus,
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 @supports (flex-direction: column) {

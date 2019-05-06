@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_11_233334) do
+ActiveRecord::Schema.define(version: 2019_05_06_195652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.datetime "updated_at", null: false
     t.string "slug", null: false
     t.jsonb "settings", default: {}, null: false
+    t.jsonb "parameters", default: {}, null: false
     t.index ["slug"], name: "index_biovision_components_on_slug", unique: true
   end
 
@@ -154,6 +155,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.string "meta_description", default: "", null: false
     t.text "body", default: "", null: false
     t.boolean "visible", default: true, null: false
+    t.text "parsed_body"
     t.index ["language_id"], name: "index_editable_pages_on_language_id"
   end
 
@@ -356,6 +358,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.string "meta_description"
     t.string "parents_cache", default: "", null: false
     t.integer "children_cache", default: [], null: false, array: true
+    t.string "nav_text"
     t.index ["post_type_id"], name: "index_post_categories_on_post_type_id"
   end
 
@@ -416,6 +419,12 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.index ["post_id"], name: "index_post_images_on_post_id"
   end
 
+  create_table "post_layouts", comment: "Post layout", force: :cascade do |t|
+    t.integer "posts_count", default: 0, null: false
+    t.string "slug"
+    t.string "name"
+  end
+
   create_table "post_links", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -432,6 +441,15 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.integer "priority", limit: 2, default: 1, null: false
     t.text "text", null: false
     t.index ["post_id"], name: "index_post_notes_on_post_id"
+  end
+
+  create_table "post_post_categories", comment: "Post in post category", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "post_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_category_id"], name: "index_post_post_categories_on_post_category_id"
+    t.index ["post_id"], name: "index_post_post_categories_on_post_id"
   end
 
   create_table "post_post_tags", force: :cascade do |t|
@@ -485,6 +503,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.string "name", null: false
     t.string "slug", null: false
     t.string "default_category_name"
+    t.string "url_part"
     t.index ["name"], name: "index_post_types_on_name", unique: true
     t.index ["slug"], name: "index_post_types_on_slug", unique: true
   end
@@ -552,6 +571,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.boolean "spam", default: false, null: false
     t.jsonb "data", default: {}, null: false
     t.boolean "avoid_parsing", default: false, null: false
+    t.bigint "post_layout_id"
     t.index "date_trunc('month'::text, created_at), post_type_id, user_id", name: "posts_created_at_month_idx"
     t.index "date_trunc('month'::text, publication_time), post_type_id, user_id", name: "posts_pubdate_month_idx"
     t.index ["agent_id"], name: "index_posts_on_agent_id"
@@ -559,6 +579,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
     t.index ["data"], name: "index_posts_on_data", using: :gin
     t.index ["language_id"], name: "index_posts_on_language_id"
     t.index ["post_category_id"], name: "index_posts_on_post_category_id"
+    t.index ["post_layout_id"], name: "index_posts_on_post_layout_id"
     t.index ["post_type_id"], name: "index_posts_on_post_type_id"
     t.index ["slug"], name: "index_posts_on_slug"
     t.index ["user_id"], name: "index_posts_on_user_id"
@@ -748,6 +769,8 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
   add_foreign_key "post_links", "posts", column: "other_post_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_links", "posts", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_notes", "posts", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_post_categories", "post_categories", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "post_post_categories", "posts", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_post_tags", "post_tags", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_post_tags", "posts", on_update: :cascade, on_delete: :cascade
   add_foreign_key "post_references", "posts", on_update: :cascade, on_delete: :cascade
@@ -760,6 +783,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_233334) do
   add_foreign_key "posts", "agents", on_update: :cascade, on_delete: :nullify
   add_foreign_key "posts", "languages", on_update: :cascade, on_delete: :nullify
   add_foreign_key "posts", "post_categories", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "posts", "post_layouts", on_update: :cascade, on_delete: :nullify
   add_foreign_key "posts", "post_types", on_update: :cascade, on_delete: :cascade
   add_foreign_key "posts", "posts", column: "original_post_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "posts", "users", on_update: :cascade, on_delete: :cascade
